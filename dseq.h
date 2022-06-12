@@ -3,7 +3,20 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "dvector.h"
+
+#ifndef U32ROUNDUP
+#define U32ROUNDUP
+static inline uint32_t u32rndup(uint32_t x)
+{
+    --x;
+    x |= (x>>1);
+    x |= (x>>2);
+    x |= (x>>4);
+    x |= (x>>8);
+    x |= (x>>16);
+    return ++x;
+}
+#endif
 
 /* Sequences are stored in a chain of one-byte slots. Each byte-long slot can        */
 /* store up to 4 symbols. Each symbol is encoded using two bits: 00 for A, 01 for C, */
