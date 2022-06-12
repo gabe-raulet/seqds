@@ -85,14 +85,27 @@ void dseq_push(dseq ds, const char *symbols)
     }
 }
 
-void dseq_read(dseq ds, char *symbols)
+void dseq_read_into(dseq ds, char *symbols)
 {
-    char *p = symbols;
+    dseq_slice_into(ds, 0, ds->num_symbols, symbols);
+}
 
-    int r, s;
-    r = s = 0;
+char *dseq_read(dseq ds)
+{
+    char *symbols = malloc(ds->num_symbols + 1);
+    dseq_read_into(ds, symbols);
+    return symbols;
+}
 
-    for (size_t i = 0; i < ds->num_symbols; ++i)
+void dseq_slice_into(dseq ds, size_t i, size_t j, char *slice)
+{
+    char *p = slice;
+
+    size_t s = i / 4;
+    size_t r = i % 4;
+    size_t n = j - i;
+
+    for (size_t i = 0; i < n; ++i)
     {
         *p++ = NT4CHAR(((ds->slots[s]) >> (2*r++))&3);
         r %= 4;
@@ -100,6 +113,13 @@ void dseq_read(dseq ds, char *symbols)
     }
 
     *p = 0;
+}
+
+char *dseq_slice(dseq ds, size_t i, size_t j)
+{
+    char *slice = malloc(j - i + 1);
+    dseq_slice_into(ds, i, j, slice);
+    return slice;
 }
 
 void dseq_shrink_to_fit(dseq ds)

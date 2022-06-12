@@ -13,7 +13,10 @@ typedef struct dseq_s dseq_s, *dseq;
 
 dseq dseq_init();
 void dseq_push(dseq ds, const char *symbols);
-void dseq_read(dseq ds, char *symbols);
+char *dseq_read(dseq ds);
+char *dseq_slice(dseq ds, size_t i, size_t j);
+void dseq_read_into(dseq ds, char *symbols);
+void dseq_slice_into(dseq ds, size_t i, size_t j, char *slice);
 void dseq_shrink_to_fit(dseq ds);
 
 size_t dseq_num_symbols(const dseq ds);
