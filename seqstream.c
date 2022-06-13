@@ -103,8 +103,8 @@ int seqstream_collect(seqstream stream, charstring *collect, int delim, int null
 int seqstream_read(seqstream stream, dseq ds, char **name)
 {
     charstring name_collect, seq_collect;
-    dvector_init(name_collect);
     dvector_init(seq_collect);
+    dvector_init(name_collect);
 
     if (seqstream_fastforward(stream, '>') < 0)
         return -1;
@@ -119,6 +119,7 @@ int seqstream_read(seqstream stream, dseq ds, char **name)
 
     dseq_push(ds, seq_collect.a);
 
-    *name = strdup(name_collect.a);
+    if (name) *name = strdup(name_collect.a);
+
     return 0;
 }
