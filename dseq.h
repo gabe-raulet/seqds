@@ -31,6 +31,8 @@ char *dseq_slice(dseq ds, size_t i, size_t j);
 void dseq_read_into(dseq ds, char *symbols);
 void dseq_slice_into(dseq ds, size_t i, size_t j, char *slice);
 void dseq_shrink_to_fit(dseq ds);
+void dseq_clear(dseq ds);
+void dseq_free(dseq ds);
 
 size_t dseq_num_symbols(const dseq ds);
 size_t dseq_slots_filled(const dseq ds);

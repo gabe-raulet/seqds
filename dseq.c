@@ -1,4 +1,5 @@
 #include "dseq.h"
+#include <string.h>
 
 struct dseq_s
 {
@@ -41,10 +42,16 @@ dseq dseq_init()
     ds->num_symbols     = 0;
     ds->slots_filled    = 0;
     ds->slots_avail     = 1;
-    ds->slots           = malloc(ds->slots_avail);
+    ds->slots           = calloc(ds->slots_avail, 1);
     ds->cur_slot_offset = 0;
 
     return ds;
+}
+
+void dseq_free(dseq ds)
+{
+    free(ds->slots);
+    free(ds);
 }
 
 void dseq_push(dseq ds, const char *symbols)
@@ -124,13 +131,32 @@ char *dseq_slice(dseq ds, size_t i, size_t j)
 
 void dseq_shrink_to_fit(dseq ds)
 {
-   if (ds->slots_avail != ds->slots_filled)
+   if (ds->slots_avail > ds->slots_filled)
    {
        ds->slots_avail = ds->slots_filled;
        ds->slots = realloc(ds->slots, ds->slots_avail);
    }
 }
 
-size_t dseq_num_symbols(const dseq ds) { return ds->num_symbols; }
-size_t dseq_slots_filled(const dseq ds) { return ds->slots_filled; }
-size_t dseq_slots_avail(const dseq ds) { return ds->slots_avail; }
+void dseq_clear(dseq ds)
+{
+    ds->slots_filled = 0;
+    ds->num_symbols = 0;
+    ds->cur_slot_offset = 0;
+    memset(ds->slots, 0, ds->slots_avail);
+}
+
+size_t dseq_num_symbols(const dseq ds)
+{
+    return ds->num_symbols;
+}
+
+size_t dseq_slots_filled(const dseq ds)
+{
+    return ds->slots_filled;
+}
+
+size_t dseq_slots_avail(const dseq ds)
+{
+    return ds->slots_avail;
+}
