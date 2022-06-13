@@ -112,7 +112,7 @@ void dseq_slice_into(dseq ds, size_t i, size_t j, char *slice)
     size_t r = i % 4;
     size_t n = j - i;
 
-    for (size_t i = 0; i < n; ++i)
+    for (size_t k = 0; k < n; ++k)
     {
         *p++ = NT4CHAR(((ds->slots[s]) >> (2*r++))&3);
         r %= 4;
@@ -144,6 +144,27 @@ void dseq_clear(dseq ds)
     ds->num_symbols = 0;
     ds->cur_slot_offset = 0;
     memset(ds->slots, 0, ds->slots_avail);
+}
+
+uint64_t dseq_kmer_code(dseq ds, size_t i, size_t k)
+{
+    size_t s = i / 4;
+    size_t r = i % 4;
+
+    uint64_t for_code = 0;
+    uint64_t rev_code = 0;
+
+    for (size_t p = 0; p < k; ++p)
+    {
+        int c = (ds->slots[s] >> (2*r++))&3;
+        r %= 4;
+        s = (!r) ? s+1 : s;
+
+        for_code += c * (1ULL << (2 * (k-p-1)));
+        rev_code += (3-c) * (1ULL << (2 * p));
+    }
+
+    return (for_code < rev_code) ? for_code : rev_code;
 }
 
 size_t dseq_num_symbols(const dseq ds)

@@ -34,6 +34,8 @@ void dseq_shrink_to_fit(dseq ds);
 void dseq_clear(dseq ds);
 void dseq_free(dseq ds);
 
+uint64_t dseq_kmer_code(dseq ds, size_t i, size_t j);
+
 size_t dseq_num_symbols(const dseq ds);
 size_t dseq_slots_filled(const dseq ds);
 size_t dseq_slots_avail(const dseq ds);
